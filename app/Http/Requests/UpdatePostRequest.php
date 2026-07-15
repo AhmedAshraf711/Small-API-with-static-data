@@ -25,7 +25,7 @@ class UpdatePostRequest extends FormRequest
         return [
             'title'=>['sometimes','string','max:100'],
             'description'=>['sometimes','string','min:10'],
-            'user_id'=>['integer','exists:users,id']
+            // 'user_id'=>['integer','exists:users,id']
         ];
     }
 }

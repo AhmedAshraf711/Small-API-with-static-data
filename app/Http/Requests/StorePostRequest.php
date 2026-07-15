@@ -25,7 +25,7 @@ class StorePostRequest extends FormRequest
         return [
             'title'=>['required','string','max:100'],
             'description'=>['required','string','min:10'],
-            'user_id'=>['integer','exists:users,id']
+            // 'user_id'=>['integer','exists:users,id']
         ];
     }
 }

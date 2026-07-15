@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use App\Models\Post;
 use App\Repositories\Interfaces\PostRepositoryInterface;
@@ -28,16 +30,26 @@ class PostController extends Controller
     }
     public function store(StorePostRequest $validRequest)
     {
-         $this->postRepository->create($validRequest->validated());
+         $user_id=Auth::user()->id;
+         $validData=$validRequest->validated();
+         $validData["user_id"]=$user_id;
+         $this->postRepository->create($validData);
          return response()->json(['message'=>'post added successfully'],201);
     }
     public function update(UpdatePostRequest $validRequest, $id)
-    {
-         $this->postRepository->update($id, $validRequest->validated());
+    { 
+         $post=$this->postRepository->getById($id);
+         Gate::authorize('update', $post);
+         $user_id=Auth::user()->id;
+         $validData=$validRequest->validated();
+         $validData["user_id"]=$user_id;
+         $this->postRepository->update($id, $validData);
          return response()->json(['message'=>'post updated successfully'],201);
     }
     public function destroy($id)
     {
+        $post=$this->postRepository->getById($id);
+         Gate::authorize('delete', $post);
          $this->postRepository->delete($id);
          return response()->json(['message'=> 'post deleted successfully'],201);
     }
