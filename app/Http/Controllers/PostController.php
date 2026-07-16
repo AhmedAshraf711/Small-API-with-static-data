@@ -30,9 +30,9 @@ class PostController extends Controller
     }
     public function store(StorePostRequest $validRequest)
     {
-         $user_id=Auth::user()->id;
          $validData=$validRequest->validated();
-         $validData["user_id"]=$user_id;
+         $user_id=Auth::user()->id;
+         $validData['user_id']=$user_id;
          $this->postRepository->create($validData);
          return response()->json(['message'=>'post added successfully'],201);
     }
@@ -40,18 +40,16 @@ class PostController extends Controller
     { 
          $post=$this->postRepository->getById($id);
          Gate::authorize('update', $post);
-         $user_id=Auth::user()->id;
          $validData=$validRequest->validated();
-         $validData["user_id"]=$user_id;
-         $this->postRepository->update($id, $validData);
-         return response()->json(['message'=>'post updated successfully'],201);
+         $this->postRepository->update($post, $validData);
+         return response()->json(['message'=>'post updated successfully'],200);
     }
     public function destroy($id)
     {
         $post=$this->postRepository->getById($id);
          Gate::authorize('delete', $post);
          $this->postRepository->delete($id);
-         return response()->json(['message'=> 'post deleted successfully'],201);
+         return response()->json(['message'=> 'post deleted successfully'],200);
     }
         
 }

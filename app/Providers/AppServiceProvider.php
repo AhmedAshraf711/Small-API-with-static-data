@@ -26,10 +26,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::policy(Post::class, PostPolicy::class);
+        
         RateLimiter::for('register_login', function (Request $request) {
         return Limit::perMinute(3)->by($request->user()?->id ?: $request->ip());});
         RateLimiter::for('api', function (Request $request) {
-        return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());});
-        Gate::policy(Post::class, PostPolicy::class);
+        return Limit::perMinute(10)->by($request->user()->id);});
+        
     }
 }
